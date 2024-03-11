@@ -1,0 +1,21 @@
+---
+- name: Create required path
+  ansible.builtin.file:
+    path: /opt/psql-server/
+    state: directory
+    mode: 0700
+    owner: "{{ ansible_user }}"
+
+- name: Copy psql-server Docker Compose files
+  template:
+    src: files/docker-compose.yml.j2
+    dest: /opt/psql-server/docker-compose.yml
+    owner: "{{ ansible_user }}"
+
+- name: Deploy psql-server project
+  community.docker.docker_compose:
+    project_src: "/opt/psql-server/"
+    files:
+      - docker-compose.yml
+    state: present
+    pull: true

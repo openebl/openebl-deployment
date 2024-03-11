@@ -1,0 +1,12 @@
+BU_SERVER_IMAGE: 'openebl/bu_server:latest'
+DATABASE_HOST: 'openebl-dev.gogoopenebl.us-east-1.rds.amazonaws.com'
+DATABASE_PORT: '5432'
+DATABASE_USER: 'openebladmin'
+DATABASE_PASSWORD: 'xxxxxxxx'
+DATABASE_NAME: 'devbxebl_bu_server'
+DATABASE_POOL_SIZE: 5
+DATABASE_SSLMODE: disable
+SERVER_BIND_ADDRESS: ""
+SERVER_BIND_PORT: 8080
+MANAGER_BIND_ADDRESS: ""
+MANAGER_BIND_PORT: 8081

@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  psql-db-server:
+      container_name: psql-db-server
+      image: postgres:14.10-alpine
+      restart: always
+      environment:
+          POSTGRES_USER: "{{ DATABASE_USER }}"
+          POSTGRES_PASSWORD: "{{ DATABASE_PASSWORD }}"
+          PGDATA: /var/lib/postgresql/data
+      volumes:
+          - db-data:/var/lib/postgresql/data
+      networks:
+        - default
+      ports:
+          - "{{ DATABASE_PORT }}:5432"
+
+volumes:
+    db-data:
+
+networks:
+  default:
+    name: openebl-network
+    external: true

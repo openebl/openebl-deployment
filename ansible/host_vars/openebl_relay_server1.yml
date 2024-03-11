@@ -1,0 +1,1 @@
+OTHER_PEERS: '"ws://openebl_relay_server2.peer.host:3000","wss://example-2.peer.host:443"'  # hosts with double quotes and split by comma
