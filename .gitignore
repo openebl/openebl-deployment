@@ -1,0 +1,9 @@
+.swn
+.swo
+.swp
+*.bak
+*.bak.*
+*.log
+*.tmp
+*.tmp.*
+*.pem
