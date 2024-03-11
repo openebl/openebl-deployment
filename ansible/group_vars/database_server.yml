@@ -1,0 +1,3 @@
+DATABASE_PORT: '5432'
+DATABASE_USER: 'openebl_db_user'
+DATABASE_PASSWORD: 'openebl_db_password'

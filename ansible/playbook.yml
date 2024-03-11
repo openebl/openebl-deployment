@@ -1,0 +1,58 @@
+---
+- name: Get unique hosts
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Initialize unique hostnames list
+      set_fact:
+        unique_hostnames: []
+    - name: Check ansible_host uniqueness
+      set_fact:
+        unique_hostnames: "{{ unique_hostnames + [item] }}"
+      loop: "{{ groups['all'] }}"
+      when: item not in unique_hostnames and hostvars[item].ansible_host not in unique_hostnames | map('extract', hostvars, 'ansible_host') | select('defined') | list
+    - name: Save unique_hostnames to a file
+      copy:
+        content: "{unique_hostnames: {{ unique_hostnames | to_json }}}"
+        dest: /tmp/unique_hostnames.json
+
+- name: Init the docker environment for all hosts
+  hosts: all
+  become: true
+  gather_facts: true
+  vars_files:
+    - /tmp/unique_hostnames.json
+  tasks:
+    - name: Install Docker env
+      include_role:
+        name: docker
+      run_once: true
+      when: inventory_hostname is in unique_hostnames
+
+    - name: Create docker network
+      community.docker.docker_network:
+        name: openebl
+        state: present
+        driver: bridge
+      when: inventory_hostname is in unique_hostnames
+
+- name: Deploy PostgreSQL Server
+  hosts: database_server
+  become: true
+  gather_facts: true
+  roles:
+      - role: psql-server
+
+- name: Deploy OpenEBL Relay Server
+  hosts: openebl_relay_server
+  become: true
+  gather_facts: true
+  roles:
+      - role: openebl_relay_server
+
+- name: Deploy OpenEBL BU Server
+  hosts: openebl_bu_server
+  become: true
+  gather_facts: true
+  roles:
+      - role: openebl_bu_server

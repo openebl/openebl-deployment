@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  bu_server:
+    container_name: '{{ inventory_hostname | default('bu_server') }}'
+    hostname: '{{ inventory_hostname | default('bu_server') }}'
+    image: "{{ BU_SERVER_IMAGE | default('openebl/bu_server:latest') }}"
+    command: sh -c "bu_server migrate && bu_server server"
+    restart: always
+    environment:
+      DATABASE_HOST: "{{ DATABASE_HOST | default('localhost') }}"
+      DATABASE_PORT: "{{ DATABASE_PORT | default('5432') }}"
+      DATABASE_USER: "{{ DATABASE_USER | default('root') }}"
+      DATABASE_PASSWORD: "{{ DATABASE_PASSWORD | default('') }}"
+      DATABASE_NAME: "{{ DATABASE_NAME | default('bu_server') }}"
+      DATABASE_POOL_SIZE: "{{ DATABASE_POOL_SIZE | default('5') }}"
+      DATABASE_SSLMODE: "{{ DATABASE_SSLMODE | default('disable') }}"
+      SERVER_BIND_ADDRESS: "{{ SERVER_BIND_ADDRESS | default('') }}"
+      SERVER_BIND_PORT: "{{ SERVER_BIND_PORT | default('8080') }}"
+      MANAGER_BIND_ADDRESS: "{{ MANAGER_BIND_ADDRESS | default('') }}"
+      MANAGER_BIND_PORT: "{{ MANAGER_BIND_PORT | default('8081') }}"
+    networks:
+      - openebl
+    ports:
+      - 8080:8080
+      - 8081:8081
+
+
+networks:
+  openebl:
+    name: openebl
+    external: true

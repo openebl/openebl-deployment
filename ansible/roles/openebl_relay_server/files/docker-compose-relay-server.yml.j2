@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  relay_server:
+    container_name: '{{ inventory_hostname | default('relay_server') }}'
+    hostname: '{{ inventory_hostname | default('relay_server') }}'
+    image: "{{ RELAY_SERVER_IMAGE | default('openebl/relay_server:latest')}}"
+    command: sh -c "relay_server migrate && relay_server server"
+    restart: always
+    environment:
+      LOCAL_ADDRESS: ":3000"
+      DATABASE_NAME: "{{ DATABASE_NAME }}"
+      DATABASE_PORT: "{{ DATABASE_PORT }}"
+      DATABASE_HOST: "{{ DATABASE_HOST }}"
+      DATABASE_USER: "{{ DATABASE_USER }}"
+      DATABASE_PASSWORD: "{{ DATABASE_PASSWORD }}"
+      OTHER_PEERS: '{{ OTHER_PEERS }}'
+    healthcheck:
+      test: curl --fail http://localhost:3000/healthz || exit 1
+      interval: 1m
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - openebl
+    ports:
+      - 3000:3000
+
+networks:
+  openebl:
+    name: openebl
+    external: true
