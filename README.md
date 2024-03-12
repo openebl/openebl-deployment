@@ -28,14 +28,20 @@ To deploy OpenEBL services on your servers, follow these steps:
     cd openebl-deployment/ansible
     ```
 
-3. Copy the example inventory file (`inventory_example.yaml`) as `inventory.yml` and update with the IP addresses and SSH credentials of your servers. Ensure that you have separate groups for different types of servers (e.g., web servers, database servers).
+3. Update Settings
 
-4. Review and customize the Ansible playbooks and configurations based on your deployment requirements. You can find the variables setting in the `group_vars/` and `host_vars` directories.
+   1. Inventory
 
-    - group_vars: the variables in each file will be applied to all hosts defined in the group, the file name is the group name.
-    - host_vars: the variables in each file will be applied to the host aligned to the file name.
+        Copy the example inventory file (`inventory_example.yml`) as `inventory.yml` and update with the IP addresses and SSH credentials of your servers. Ensure that you have separate groups for different types of servers (e.g., web servers, database servers).
 
-5. Run the Ansible playbooks to deploy OpenEBL services:
+   2. Variables
+
+        Review and customize the Ansible playbooks and configurations based on your deployment requirements. You can find the variables setting in the `group_vars/` and `host_vars` directories.
+
+        - group_vars: the variables in each file will be applied to all hosts defined in the group, the file name is the group name.
+        - host_vars: the variables in each file will be applied to the host aligned to the file name.
+
+4. Run the Ansible playbooks to deploy OpenEBL services:
 
     ```bash
     cd openebl-deployment/ansible
@@ -44,7 +50,7 @@ To deploy OpenEBL services on your servers, follow these steps:
 
     You can replace `inventory.yml` with the path to your self-defined inventory files with different filenames if you have different sets of allocations to execute the deployment playbook.
 
-6. Monitor the deployment process for any errors or issues.
+5. Monitor the deployment process for any errors or issues.
 
 ## Contributing
 
