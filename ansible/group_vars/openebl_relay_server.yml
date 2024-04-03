@@ -4,4 +4,5 @@ DATABASE_PORT: '5432'
 DATABASE_NAME: 'devbxebl_relay_server'
 DATABASE_USER: 'openebladmin'
 DATABASE_PASSWORD: 'xxxxxxxx'
+OTLP_ENDPOINT: 'http://localhost:4317'
 # OTHER_PEERS: '"ws://example-1.peer.host:3000","wss://example-2.peer.host:443"'  # hosts with double quotes and split by comma
