@@ -19,6 +19,7 @@ services:
       SERVER_BIND_PORT: "{{ SERVER_BIND_PORT | default('8080') }}"
       MANAGER_BIND_ADDRESS: "{{ MANAGER_BIND_ADDRESS | default('') }}"
       MANAGER_BIND_PORT: "{{ MANAGER_BIND_PORT | default('8081') }}"
+      OTLP_ENDPOINT: "{{ OTLP_ENDPOINT }}"
     networks:
       - openebl
     ports:
