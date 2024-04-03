@@ -1,7 +1,7 @@
 # inventory/inventory_example.yaml
 all:
     children:
-        openebl_relay_server:
+        openebl_relay_server:  # Can be multiple relay servers
             hosts:
                 openebl_relay_server1:
                     ansible_user: ubuntu
@@ -12,7 +12,14 @@ all:
                 #     ansible_host: 34.209.241.91
                 #     ansible_ssh_private_key_file: /path/to/openebl-ssh-key2.pem
 
-        openebl_bu_server:
+        openebl_bu_server_broker:  # Only one BU server broker allowed
+            hosts:
+                openebl_bu_server_broker:
+                    ansible_user: ubuntu
+                    ansible_host: 54.212.31.57
+                    ansible_ssh_private_key_file: ./openebl-ssh-key.pem
+
+        openebl_bu_server:  # Can be multiple BU servers
             hosts:
                 openebl_bu_server1:
                     ansible_user: ubuntu
@@ -23,7 +30,7 @@ all:
                 #     ansible_host: 134.20.24.93
                 #     ansible_ssh_private_key_file: /path/to/openebl-ssh-key3.pem
 
-        database_server:
+        database_server:  # Optional, it's for development purposes
             hosts:
                 # database_server:
                 #     ansible_user: ubuntu

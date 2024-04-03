@@ -50,6 +50,13 @@
   roles:
       - role: openebl_relay_server
 
+- name: Deploy OpenEBL BU Server Broker
+  hosts: openebl_bu_server_broker
+  become: true
+  gather_facts: true
+  roles:
+      - role: openebl_bu_server_broker
+
 - name: Deploy OpenEBL BU Server
   hosts: openebl_bu_server
   become: true
