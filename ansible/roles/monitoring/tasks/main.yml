@@ -1,0 +1,24 @@
+---
+- name: Create required path
+  ansible.builtin.file:
+    path: /opt/openebl/
+    state: directory
+    mode: 0744
+
+- name: Create monitoring stack Docker Compose file
+  template:
+    src: ./files/docker-compose-monitoring.yml.j2
+    dest: /opt/openebl/docker-compose-monitoring.yml
+
+- name: Deploy monitoring stack
+  community.docker.docker_compose:
+    project_src: "/opt/openebl/"
+    files:
+      - docker-compose-monitoring.yml.
+    state: present
+    pull: true
+  register: output
+
+- name: Show results
+  ansible.builtin.debug:
+    var: output

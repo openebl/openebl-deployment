@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  monitoing:
+    container_name: '{{ inventory_hostname | default('grafana-otel-lgtm') }}'
+    hostname: '{{ inventory_hostname | default('grafana-otel-lgtm') }}'
+    image: "{{ GRAFANA_OTEL_LGTM_IMAGE | default('grafana/otel-lgtm:0.4.0') }}"
+    restart: always
+    environment:
+      OTEL_METRIC_EXPORT_INTERVAL: "{{ OTEL_METRIC_EXPORT_INTERVAL | default('60000') }}"
+    networks:
+      - openebl
+    ports:
+      - 3000:3000
+      - 4317:4317
+      - 4318:4318
+
+networks:
+  openebl:
+    name: openebl
+    external: true
