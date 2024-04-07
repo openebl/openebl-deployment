@@ -1,14 +1,23 @@
 ---
-- name: Create required path
+- name: Create required paths
   ansible.builtin.file:
-    path: /opt/openebl/
+    path: /opt/openebl/monitoring/
     state: directory
     mode: 0744
+    owner: {{ ansible_user }}
+    group: {{ ansible_user }}
 
-- name: Create monitoring stack Docker Compose file
+- name: Create monitoring stack Docker Compose file and config files
   template:
-    src: ./files/docker-compose-monitoring.yml.j2
-    dest: /opt/openebl/docker-compose-monitoring.yml
+    src: "{{ item.src }}"
+    dest: "{{ item.dist }}"
+    owner: {{ ansible_user }}
+    group: {{ ansible_user }}
+  loop:
+    - src: ./files/docker-compose-monitoring.yml.j2
+      dest: /opt/openebl/docker-compose-monitoring.yml
+    - src: ./files/tempo-config.yaml
+      dest: /opt/openebl/monitoring/tempo-config.yaml
 
 - name: Deploy monitoring stack
   community.docker.docker_compose:
