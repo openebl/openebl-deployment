@@ -32,4 +32,4 @@ metrics_generator:
         send_exemplars: true
 
 overrides:
-  metrics_generator_processors: [service-graphs]
+  metrics_generator_processors: [service-graphs, 'local-blocks']
