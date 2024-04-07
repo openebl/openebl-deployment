@@ -13,7 +13,7 @@
     dest: "{{ item.dist }}"
     owner: {{ ansible_user }}
     group: {{ ansible_user }}
-  loop:
+  with_items:
     - src: ./files/docker-compose-monitoring.yml.j2
       dest: /opt/openebl/docker-compose-monitoring.yml
     - src: ./files/tempo-config.yaml
