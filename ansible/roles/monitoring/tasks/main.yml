@@ -7,23 +7,19 @@
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
 
-- name: Create monitoring stack Docker Compose file and config files
-  template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-  with_items:
-    - src: ./files/docker-compose-monitoring.yml.j2
-      dest: /opt/openebl/docker-compose-monitoring.yml
-    - src: ./files/tempo-config.yaml
-      dest: /opt/openebl/monitoring/tempo-config.yaml
+- name: Download monitoring stack files
+  ansible.builtin.git:
+    repo: https://github.com/SigNoz/signoz.git
+    dest: /opt/openebl/monitoring/signoz
+    version: main
+    update: true
+    single_branch: true
 
-- name: Deploy monitoring stack
+- name: Deploy SigNoz stack
   community.docker.docker_compose:
-    project_src: "/opt/openebl/"
+    project_src: "/opt/openebl/monitoring/signoz/deploy/docker/clickhouse-setup/"
     files:
-      - docker-compose-monitoring.yml
+      - docker-compose.yaml
     state: present
     pull: true
   register: output
