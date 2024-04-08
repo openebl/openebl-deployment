@@ -1,0 +1,24 @@
+---
+- name: Create required path
+  ansible.builtin.file:
+    path: /opt/openebl/
+    state: directory
+    mode: 0744
+
+- name: Create openebl BU server Docker Compose file
+  template:
+    src: ./files/docker-compose-bu-server-broker.yml.j2
+    dest: /opt/openebl/docker-compose-bu-server-broker.yml
+
+- name: Deploy openebl BU server
+  community.docker.docker_compose:
+    project_src: "/opt/openebl/"
+    files:
+      - docker-compose-bu-server-broker.yml
+    state: present
+    pull: true
+  register: output
+
+- name: Show results
+  ansible.builtin.debug:
+    var: output

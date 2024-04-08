@@ -1,0 +1,28 @@
+---
+- name: Create required paths
+  ansible.builtin.file:
+    path: /opt/openebl/monitoring/
+    state: directory
+    mode: 0744
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Download monitoring stack files
+  ansible.builtin.git:
+    repo: https://github.com/SigNoz/signoz.git
+    dest: /opt/openebl/monitoring/signoz
+    version: main
+    update: true
+
+- name: Deploy SigNoz stack
+  community.docker.docker_compose:
+    project_src: "/opt/openebl/monitoring/signoz/deploy/docker/clickhouse-setup/"
+    files:
+      - docker-compose.yaml
+    state: present
+    pull: true
+  register: output
+
+- name: Show results
+  ansible.builtin.debug:
+    var: output
