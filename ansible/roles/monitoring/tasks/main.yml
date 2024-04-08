@@ -13,7 +13,6 @@
     dest: /opt/openebl/monitoring/signoz
     version: main
     update: true
-    single_branch: true
 
 - name: Deploy SigNoz stack
   community.docker.docker_compose:
