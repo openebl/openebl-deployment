@@ -71,6 +71,13 @@
   roles:
       - role: openebl_bu_server
 
+- name: Deploy OpenEBL Cert Server
+  hosts: openebl_cert_server
+  become: true
+  gather_facts: true
+  roles:
+      - role: openebl_cert_server
+
 - name: Remove unused Docker images and volumes
   hosts: all
   become: true

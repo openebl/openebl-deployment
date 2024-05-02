@@ -1,0 +1,4 @@
+OTLP_ENDPOINT: '{{ ansible_host }}:4317'
+RELAY_SERVER: 'ws://{{ ansible_host }}:9001'
+PRIVATE_ADDRESS: 'localhost:9100'
+PUBLIC_ADDRESS: '0.0.0.0:9101'
