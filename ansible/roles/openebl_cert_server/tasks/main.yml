@@ -10,7 +10,7 @@
     src: ./files/docker-compose-cert-server.yml.j2
     dest: /opt/openebl/docker-compose-cert-server.yml
 
-- name: Deploy openebl BU server
+- name: Deploy openebl Cert server
   community.docker.docker_compose:
     project_src: "/opt/openebl/"
     files:
