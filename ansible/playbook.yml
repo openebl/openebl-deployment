@@ -41,35 +41,42 @@
   become: true
   gather_facts: true
   roles:
-      - role: psql-server
+    - role: psql-server
 
 - name: Deploy Monitoring Stack
   hosts: monitoring
   become: true
   gather_facts: true
   roles:
-      - role: monitoring
+    - role: monitoring
 
 - name: Deploy OpenEBL Relay Server
   hosts: openebl_relay_server
   become: true
   gather_facts: true
   roles:
-      - role: openebl_relay_server
+    - role: openebl_relay_server
 
 - name: Deploy OpenEBL BU Server Broker
   hosts: openebl_bu_server_broker
   become: true
   gather_facts: true
   roles:
-      - role: openebl_bu_server_broker
+    - role: openebl_bu_server_broker
 
 - name: Deploy OpenEBL BU Server
   hosts: openebl_bu_server
   become: true
   gather_facts: true
   roles:
-      - role: openebl_bu_server
+    - role: openebl_bu_server
+
+- name: Deploy OpenEBL Cert Server
+  hosts: openebl_cert_server
+  become: true
+  gather_facts: true
+  roles:
+    - role: openebl_cert_server
 
 - name: Remove unused Docker images and volumes
   hosts: all

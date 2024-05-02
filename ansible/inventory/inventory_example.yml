@@ -11,14 +11,12 @@ all:
                 #     ansible_user: ubuntu
                 #     ansible_host: 34.209.241.91
                 #     ansible_ssh_private_key_file: /path/to/openebl-ssh-key2.pem
-
         openebl_bu_server_broker:  # Only one BU server broker allowed
             hosts:
                 openebl_bu_server_broker:
                     ansible_user: ubuntu
                     ansible_host: 54.212.31.57
                     ansible_ssh_private_key_file: ./openebl-ssh-key.pem
-
         openebl_bu_server:  # Can be multiple BU servers
             hosts:
                 openebl_bu_server1:
@@ -29,7 +27,12 @@ all:
                 #     ansible_user: ubuntu
                 #     ansible_host: 134.20.24.93
                 #     ansible_ssh_private_key_file: /path/to/openebl-ssh-key3.pem
-
+        openebl_cert_server:
+            hosts:
+                openebl_cert_server:
+                    ansible_user: ubuntu
+                    ansible_host: 54.212.31.57
+                    ansible_ssh_private_key_file: ./openebl-ssh-key.pem
         monitoring:  # Optional, it's for development purposes, and for collecting opentelemetry data
             hosts:
                 monitoring:

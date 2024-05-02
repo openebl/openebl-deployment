@@ -20,6 +20,7 @@ services:
       MANAGER_BIND_ADDRESS: "{{ MANAGER_BIND_ADDRESS | default('') }}"
       MANAGER_BIND_PORT: "{{ MANAGER_BIND_PORT | default('8081') }}"
       RELAY_SERVER: "{{ RELAY_SERVER | default('ws://localhost:9001') }}"
+      CERT_SERVER: "{{ CERT_SERVER | default('http://localhost:9101') }}"
       OTLP_ENDPOINT: "{{ OTLP_ENDPOINT }}"
     networks:
       - openebl
