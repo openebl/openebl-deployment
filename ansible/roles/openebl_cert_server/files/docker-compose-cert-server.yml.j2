@@ -5,7 +5,7 @@ services:
     container_name: '{{ inventory_hostname | default('cert_server') }}'
     hostname: '{{ inventory_hostname | default('cert_server') }}'
     image: "{{ CERT_SERVER_IMAGE | default('openebl/cert_server:latest') }}"
-    command: sh -c "cert_server server"
+    command: sh -c "cert_server migrate -c config.yaml && cert_server server -c config.yaml"
     restart: always
     environment:
       DATABASE_HOST: "{{ DATABASE_HOST | default('localhost') }}"
@@ -16,9 +16,9 @@ services:
       DATABASE_POOL_SIZE: "{{ DATABASE_POOL_SIZE | default('5') }}"
       DATABASE_SSLMODE: "{{ DATABASE_SSLMODE | default('disable') }}"
       OTLP_ENDPOINT: "{{ OTLP_ENDPOINT }}"
-      RELAY_SERVER="{{ RELAY_SERVER | 'ws://relay_server:9001') }}"
-      PRIVATE_ADDRESS="{{ PRIVATE_ADDRESS | default('0.0.0.0:9100') }}"
-      PUBLIC_ADDRESS="{{ PUBLIC_ADDRESS | default('0.0.0.0:9101') }}"
+      PRIVATE_ADDRESS: "{{ PRIVATE_ADDRESS | default('localhost:9100') }}"
+      PUBLIC_ADDRESS: "{{ PUBLIC_ADDRESS | default(':9101') }}"
+      RELAY_SERVER: "{{ RELAY_SERVER | 'ws://relay_server:9001') }}"
     networks:
       - openebl
     ports:

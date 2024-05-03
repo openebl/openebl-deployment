@@ -5,4 +5,4 @@ DATABASE_NAME: 'devbxebl_relay_server'
 DATABASE_USER: 'openebladmin'
 DATABASE_PASSWORD: 'xxxxxxxx'
 OTLP_ENDPOINT: '{{ ansible_host }}:4317'
-# OTHER_PEERS: '"ws://example-1.peer.host:3000","wss://example-2.peer.host:443"'  # hosts with double quotes and split by comma
+OTHER_PEERS: ''  # set peering hosts with double quotes and split by comma if needed, find example settings in host_vars
