@@ -18,7 +18,7 @@ services:
       OTLP_ENDPOINT: "{{ OTLP_ENDPOINT }}"
       PRIVATE_ADDRESS: "{{ PRIVATE_ADDRESS | default('localhost:9100') }}"
       PUBLIC_ADDRESS: "{{ PUBLIC_ADDRESS | default(':9101') }}"
-      RELAY_SERVER: "{{ RELAY_SERVER | 'ws://relay_server:9001') }}"
+      RELAY_SERVER: "{{ RELAY_SERVER | default('ws://relay_server:9001') }}"
     networks:
       - openebl
     ports:
