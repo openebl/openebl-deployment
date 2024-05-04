@@ -26,7 +26,6 @@
     - name: Install Docker env
       include_role:
         name: docker
-      run_once: true
       when: inventory_hostname is in unique_hostnames
 
     - name: Create docker network
