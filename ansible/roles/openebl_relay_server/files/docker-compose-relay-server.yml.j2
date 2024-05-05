@@ -14,16 +14,10 @@ services:
       DATABASE_HOST: "{{ DATABASE_HOST }}"
       DATABASE_USER: "{{ DATABASE_USER }}"
       DATABASE_PASSWORD: "{{ DATABASE_PASSWORD }}"
-      DATABASE_POOL_SIZE: 5
-      DATABASE_SSLMODE: "disable"
+      DATABASE_POOL_SIZE: "{{ DATABASE_POOL_SIZE | default('5') }}"
+      DATABASE_SSLMODE: "{{ DATABASE_SSLMODE | default('disable') }}"
       OTHER_PEERS: '{{ OTHER_PEERS }}'
       OTLP_ENDPOINT: "{{ OTLP_ENDPOINT }}"
-    healthcheck:
-      test: curl --fail http://localhost:3000/healthz || exit 1
-      interval: 1m
-      timeout: 3s
-      retries: 3
-      start_period: 10s
     networks:
       - openebl
     ports:
