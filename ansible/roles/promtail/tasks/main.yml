@@ -1,0 +1,29 @@
+---
+- name: Create required path
+  ansible.builtin.file:
+    path: /opt/monitoring/
+    state: directory
+    mode: 0700
+    owner: "{{ ansible_user }}"
+
+- name: Create openebl promtail Docker Compose file
+  template:
+    src: {{ item.src }}
+    dest: {{ item.dest }}
+    owner: "{{ ansible_user }}"
+  with_items:
+    - { src: "./files/promtail-config.yaml.j2", dest: "/opt/monitoring/promtail-config.yaml" }
+    - { src: "./files/docker-compose-promtail.yml.j2", dest: "/opt/monitoring/docker-compose-promtail.yml" }
+
+- name: Deploy promtail
+  community.docker.docker_compose:
+    project_src: "/opt/monitoring/"
+    files:
+      - docker-compose-promtail.yml
+    state: present
+    pull: true
+  register: output
+
+- name: Show results
+  ansible.builtin.debug:
+    var: output
