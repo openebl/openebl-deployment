@@ -28,9 +28,6 @@ services:
       - /opt/monitoring/loki/index:/loki/index
       - /opt/monitoring/loki/boltdb-cache:/loki/boltdb-cache
       - /opt/monitoring/loki/boltdb-shipper-compactor:/loki/boltdb-shipper-compactor
-    environment:
-      AWS_ACCESS_KEY_ID: "{{ LOKI_AWS_ACCESS_KEY_ID }}"
-      AWS_SECRET_ACCESS_KEY: "{{ LOKI_AWS_SECRET_ACCESS_KEY }}"
     ports:
       - 3100:3100
       - 9095:9095
@@ -58,6 +55,12 @@ services:
     restart: always
     deploy:
       mode: global
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '500M'
+        reservations:
+          memory: '20M'
     # links:
     #   - alertmanager:alertmanager
     #   - cadvisor:cadvisor
@@ -98,6 +101,13 @@ services:
       - prometheus
       - loki
       - tempo
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '500M'
+        reservations:
+          memory: '20M'
 
 #   alertmanager:
 #     image: prom/alertmanager:v0.23.0

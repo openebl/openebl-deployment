@@ -19,6 +19,7 @@
       - docker-compose-relay-server.yml
     state: present
     pull: true
+    recreate: always
   register: output
 
 - name: Show results

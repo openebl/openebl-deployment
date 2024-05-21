@@ -17,6 +17,7 @@
       - docker-compose-bu-server-broker.yml
     state: present
     pull: true
+    recreate: always
   register: output
 
 - name: Show results

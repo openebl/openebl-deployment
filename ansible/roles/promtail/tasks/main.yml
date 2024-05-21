@@ -21,6 +21,7 @@
       - docker-compose-promtail.yml
     state: present
     pull: true
+    recreate: smart
   register: output
 
 - name: Show results
