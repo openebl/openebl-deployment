@@ -1,26 +1,63 @@
 ---
-- name: Create required paths
+- name: Create required path
   ansible.builtin.file:
-    path: /opt/openebl/monitoring/
+    path: "{{ item }}"
     state: directory
     mode: 0744
     owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
+  with_items:
+    - /opt/monitoring/
+    - /opt/monitoring/loki/
+    - /opt/monitoring/loki/boltdb-cache
+    - /opt/monitoring/loki/boltdb-shipper-compactor
+    - /opt/monitoring/loki/index
+    - /opt/monitoring/prometheus/
+    - /opt/monitoring/prometheus/data
+    - /opt/monitoring/prometheus/etc
+    - /opt/monitoring/tempo/
+    - /opt/monitoring/otel-collector/
+    - /opt/monitoring/grafana/
 
-- name: Download monitoring stack files
-  ansible.builtin.git:
-    repo: https://github.com/SigNoz/signoz.git
-    dest: /opt/openebl/monitoring/signoz
-    version: v0.44.0
-    update: true
+- name: Create monitoring stack config files
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ ansible_user }}"
+  with_items:
+    - src: "./files/prometheus/prometheus.yaml"
+      dest: "/opt/monitoring/prometheus/etc/prometheus.yaml"
+    - src: "./files/tempo/tempo-config.yaml"
+      dest: "/opt/monitoring/tempo/tempo-config.yaml"
+    - src: "./files/otel-collector/otelcol-config.yaml"
+      dest: "/opt/monitoring/otel-collector/otelcol-config.yaml"
+    - src: "./files/grafana/grafana-dashboard-red-metrics-classic.json"
+      dest: "/opt/monitoring/grafana/grafana-dashboard-red-metrics-classic.json"
+    - src: "./files/grafana/grafana-dashboard-red-metrics-native.json"
+      dest: "/opt/monitoring/grafana/grafana-dashboard-red-metrics-native.json"
+    - src: "./files/grafana/grafana-dashboards.yaml"
+      dest: "/opt/monitoring/grafana/grafana-dashboards.yaml"
+    - src: "./files/grafana/grafana-datasources.yaml"
+      dest: "/opt/monitoring/grafana/grafana-datasources.yaml"
 
-- name: Deploy SigNoz stack
+- name: Create monitoring stack docker-compose file
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ ansible_user }}"
+  with_items:
+    - src: "./files/docker-compose-monitoring.yml.j2"
+      dest: "/opt/monitoring/docker-compose-monitoring.yml"
+    - src: "./files/loki/loki-config.yaml.j2"
+      dest: "/opt/monitoring/loki/local-config.yaml"
+
+- name: Deploy monitoring stack
   community.docker.docker_compose:
-    project_src: "/opt/openebl/monitoring/signoz/deploy/docker/clickhouse-setup/"
+    project_src: "/opt/monitoring/"
     files:
-      - docker-compose.yaml
+      - docker-compose-monitoring.yml
     state: present
     pull: true
+    recreate: smart
   register: output
 
 - name: Show results
