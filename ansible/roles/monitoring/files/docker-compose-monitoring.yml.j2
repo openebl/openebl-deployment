@@ -17,6 +17,7 @@ services:
       GF_AUTH_ANONYMOUS_ENABLED: 'true'
       GF_AUTH_ANONYMOUS_ORG_ROLE: 'Editor'
       GF_PATHS_PROVISIONING: '/etc/grafana/provisioning'
+      GF_DATE_FORMATS_DEFAULT_TIMEZONE: '{{ GF_DATE_FORMATS_DEFAULT_TIMEZONE | default('UTC') }}'
     ports:
       - 3000:3000
 
