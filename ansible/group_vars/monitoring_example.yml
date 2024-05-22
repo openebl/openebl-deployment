@@ -5,3 +5,4 @@ LOKI_S3_REGION: "us-west-2"
 LOKI_S3_BUCKET: "my-loki-bucket"
 GF_SECURITY_ADMIN_USER: 'grafana-security-admin-user-name'
 GF_SECURITY_ADMIN_PASSWORD: 'grafana-security-admin-password'
+GF_DATE_FORMATS_DEFAULT_TIMEZONE: 'UTC'
