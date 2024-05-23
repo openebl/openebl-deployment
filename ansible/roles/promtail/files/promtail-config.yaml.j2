@@ -18,42 +18,6 @@ scrape_configs:
           platform: host
           __path__: /var/log/*log
     pipeline_stages:
-      - timestamp:
-          source: log
-          format: RFC3339Nano
-      - timestamp:
-          source: log
-          format: RFC3339
-      - timestamp:
-          source: log
-          format: ANSIC
-      - timestamp:
-          source: log
-          format: RubyDate
-      - timestamp:
-          source: log
-          format: RFC822
-      - timestamp:
-          source: log
-          format: RFC822Z
-      - timestamp:
-          source: log
-          format: RFC850
-      - timestamp:
-          source: log
-          format: RFC1123
-      - timestamp:
-          source: log
-          format: RFC1123Z
-      - timestamp:
-          source: log
-          format: '2006-01-02T15:04:05.000'
-      - timestamp:
-          source: log
-          format: '2006-01-02 15:04:05'
-      - timestamp:
-          source: log
-          format: 'Jan 02 15:04:05'
       - regex:
           expression: '(?i)(?P<level>debug|info|warn|error)'
           source: msg
@@ -81,48 +45,9 @@ scrape_configs:
       - source_labels: [app]
         regex: promtail
         action: drop
-      # - source_labels: [app]
-      #   regex: grafana|prometheus|loki|tempo|alertmanager|otel-collector
-      #   action: drop
 
     pipeline_stages:
       - docker: {}
-      - timestamp:
-          source: log
-          format: RFC3339Nano
-      - timestamp:
-          source: log
-          format: RFC3339
-      - timestamp:
-          source: log
-          format: ANSIC
-      - timestamp:
-          source: log
-          format: RubyDate
-      - timestamp:
-          source: log
-          format: RFC822
-      - timestamp:
-          source: log
-          format: RFC822Z
-      - timestamp:
-          source: log
-          format: RFC850
-      - timestamp:
-          source: log
-          format: RFC1123
-      - timestamp:
-          source: log
-          format: RFC1123Z
-      - timestamp:
-          source: log
-          format: '2006-01-02T15:04:05.000'
-      - timestamp:
-          source: log
-          format: '2006-01-02 15:04:05'
-      - timestamp:
-          source: log
-          format: 'Jan 02 15:04:05'
       - regex:
           expression: '(?i)(?P<level>debug|info|warn|error)'
           source: msg
@@ -134,8 +59,3 @@ scrape_configs:
           replacement: info
           expression: '.*'
           regex: ^$
-      # - match:
-      #     selector: '{app="promtail"}'
-      #     stages:
-      #       - drop:
-      #           expression: "drop if this string is in the log message"
