@@ -7,3 +7,12 @@
 *.tmp
 *.tmp.*
 *.pem
+
+# Ignore everything in the list below
+/ansible/group_vars/*
+/ansible/host_vars/*
+/ansible/inventory/*
+# Allow files and folders with a pattern starting with the prefix '!'
+!/ansible/group_vars/*_example.yml
+!/ansible/host_vars/*_example.yml
+!/ansible/inventory/*_example.yml
