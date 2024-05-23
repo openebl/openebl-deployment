@@ -49,6 +49,20 @@
   roles:
     - role: monitoring
 
+- name: Deploy Log Agent -- Promtail
+  hosts: all
+  become: true
+  gather_facts: true
+  vars_files:
+    - /tmp/unique_hostnames.json
+  vars:
+    loki_server: "{{ LOKI_SERVER }}"
+  tasks:
+    - name: Install Promtail stack
+      include_role:
+        name: promtail
+      when: inventory_hostname is in unique_hostnames
+
 - name: Deploy OpenEBL Relay Server
   hosts: openebl_relay_server
   become: true

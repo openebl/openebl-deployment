@@ -1,1 +1,8 @@
 OTEL_METRIC_EXPORT_INTERVAL: 60000
+LOKI_AWS_ACCESS_KEY_ID: "aws-access-key-id-for-loki"
+LOKI_AWS_SECRET_ACCESS_KEY: "aws-secret-access-key-for-loki"
+LOKI_S3_REGION: "us-west-2"
+LOKI_S3_BUCKET: "my-loki-bucket"
+GF_SECURITY_ADMIN_USER: 'grafana-security-admin-user-name'
+GF_SECURITY_ADMIN_PASSWORD: 'grafana-security-admin-password'
+GF_DATE_FORMATS_DEFAULT_TIMEZONE: 'UTC'

@@ -1,0 +1,1 @@
+LOKI_SERVER: "loki:3100"  # The Loki server host and port

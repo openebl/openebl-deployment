@@ -1,0 +1,61 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://{{ loki_server }}/loki/api/v1/push
+
+{% raw %}
+scrape_configs:
+  - job_name: host
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          app: varlogs
+          platform: host
+          __path__: /var/log/*log
+    pipeline_stages:
+      - regex:
+          expression: '(?i)(?P<level>debug|info|warn|error)'
+      - template:
+          source: level
+          template: '{{ if .Value }}{{ .Value }}{{ else }}info{{ end }}'
+      - template:
+          source: level
+          template: '{{ .Value | ToLower }}'
+      - labels:
+          level:
+
+  - job_name: docker
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+        refresh_interval: 5s
+    relabel_configs:
+      - target_label: platform
+        replacement: docker
+      - source_labels: [__meta_docker_container_name]
+        target_label: app
+        regex: /(.+)
+        replacement: $1
+        action: replace
+
+    pipeline_stages:
+      - docker: {}
+      - regex:
+          expression: '(?i)(?P<level>debug|info|warn|error)'
+      - template:
+          source: level
+          template: '{{ if .Value }}{{ .Value }}{{ else }}info{{ end }}'
+      - template:
+          source: level
+          template: '{{ .Value | ToLower }}'
+      - labels:
+          level:
+      - drop:
+          source: app
+          value: "promtail"
+{% endraw %}

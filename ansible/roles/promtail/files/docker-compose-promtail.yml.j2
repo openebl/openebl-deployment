@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  promtail:
+    container_name: 'promtail'
+    hostname: 'promtail'
+    image: "grafana/promtail:3.0.0"
+    restart: always
+    volumes:
+      - /var/log:/var/log
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/monitoring/promtail/promtail-config.yaml:/opt/monitoring/promtail/promtail-config.yaml
+    command: -config.file=/opt/monitoring/promtail/promtail-config.yaml
+

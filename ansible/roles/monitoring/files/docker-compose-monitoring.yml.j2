@@ -1,0 +1,144 @@
+version: '3'
+
+services:
+  grafana:
+    container_name: 'grafana'
+    hostname: 'grafana'
+    image: 'grafana/grafana:10.4.1'
+    restart: always
+    volumes:
+      - /opt/monitoring/grafana/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/grafana-datasources.yaml
+      - /opt/monitoring/grafana/grafana-dashboards.yaml:/etc/grafana/provisioning/dashboards/grafana-dashboards.yaml
+      - /opt/monitoring/grafana/grafana-dashboard-red-metrics-classic.json:/otel-lgtm/grafana-dashboard-red-metrics-classic.json
+      - /opt/monitoring/grafana/grafana-dashboard-red-metrics-native.json:/otel-lgtm/grafana-dashboard-red-metrics-native.json
+    environment:
+      GF_SECURITY_ADMIN_USER: '{{ GF_SECURITY_ADMIN_USER }}'
+      GF_SECURITY_ADMIN_PASSWORD: '{{ GF_SECURITY_ADMIN_PASSWORD }}'
+      GF_AUTH_ANONYMOUS_ENABLED: 'true'
+      GF_AUTH_ANONYMOUS_ORG_ROLE: 'Editor'
+      GF_PATHS_PROVISIONING: '/etc/grafana/provisioning'
+      GF_DATE_FORMATS_DEFAULT_TIMEZONE: '{{ GF_DATE_FORMATS_DEFAULT_TIMEZONE | default('UTC') }}'
+    ports:
+      - 3000:3000
+
+  loki:
+    container_name: 'loki'
+    hostname: 'loki'
+    image: grafana/loki:2.9.6
+    user: '0'
+    volumes:
+      - /opt/monitoring/loki/local-config.yaml:/etc/loki/local-config.yaml
+      - /opt/monitoring/loki/index:/loki/index
+      - /opt/monitoring/loki/boltdb-cache:/loki/boltdb-cache
+      - /opt/monitoring/loki/boltdb-shipper-compactor:/loki/boltdb-shipper-compactor
+    ports:
+      - 3100:3100
+      - 9095:9095
+    command: -config.file=/etc/loki/local-config.yaml
+
+  prometheus:
+    container_name: 'prometheus'
+    hostname: 'prometheus'
+    image: 'prom/prometheus:v2.51.1'
+    user: '0'
+    volumes:
+      - /opt/monitoring/prometheus/etc/prometheus.yaml:/etc/prometheus/prometheus.yaml
+      - prometheus_data:/prometheus
+    command:
+      - '--enable-feature=exemplar-storage'
+      - '--enable-feature=native-histograms'
+      - '--enable-feature=otlp-write-receiver'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+      - '--web.enable-remote-write-receiver'
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+    ports:
+      - 9090:9090
+    restart: always
+    deploy:
+      mode: global
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '500M'
+        reservations:
+          memory: '20M'
+    # links:
+    #   - alertmanager:alertmanager
+    #   - cadvisor:cadvisor
+    # depends_on:
+    #   - cadvisor
+
+  tempo:
+    container_name: 'tempo'
+    hostname: 'tempo'
+    image: grafana/tempo:2.4.1
+    volumes:
+      - /opt/monitoring/tempo/tempo-config.yaml:/etc/tempo/tempo-config.yaml
+    command: -config.file=/etc/tempo/tempo-config.yaml
+    ports:
+      - "3200:3200"
+      - "3201:3201"
+      - "4417:4417"
+      - "4418:4418"
+
+  otel-collector:
+    container_name: 'otel-collector'
+    hostname: 'otel-collector'
+    image: otel/opentelemetry-collector-contrib:0.100.0
+    volumes:
+      - /opt/monitoring/otel-collector/otelcol-config.yaml:/etc/otelcol/otelcol-config.yaml
+    environment:
+      OTEL_METRIC_EXPORT_INTERVAL: "{{ OTEL_METRIC_EXPORT_INTERVAL | default('60000') }}"
+    command: ["--config=file:/etc/otelcol/otelcol-config.yaml"]
+    ports:
+      - 1888:1888 # pprof extension
+      - 8888:8888 # Prometheus metrics exposed by the Collector
+      - 8889:8889 # Prometheus exporter metrics
+      - 13133:13133 # health_check extension
+      - 4317:4317 # OTLP gRPC receiver
+      - 4318:4318 # OTLP http receiver
+      - 55679:55679 # zpages extension
+    depends_on:
+      - prometheus
+      - loki
+      - tempo
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '500M'
+        reservations:
+          memory: '20M'
+
+#   alertmanager:
+#     image: prom/alertmanager:v0.23.0
+#     restart: unless-stopped
+#     ports:
+#       - "9093:9093"
+#     volumes:
+#       - "./alertmanager:/config"
+#       - alertmanager_data:/data
+#     command: --config.file=/config/alertmanager.yml --log.level=debug
+
+volumes:
+  prometheus_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/monitoring/prometheus/data
+  # alertmanager_data:
+
+networks:
+  default:
+
+# ---
+# docker pull grafana/grafana:10.4.1
+# docker pull prom/prometheus:v2.51.1
+# docker pull grafana/tempo:2.4.1
+# docker pull grafana/loki:2.9.6
+# docker pull otel/opentelemetry-collector:0.97.0
+# docker pull prom/alertmanager:v0.27.0
