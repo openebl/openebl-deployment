@@ -8,6 +8,7 @@ positions:
 clients:
   - url: http://{{ loki_server }}/loki/api/v1/push
 
+{% raw %}
 scrape_configs:
   - job_name: host
     static_configs:
@@ -57,3 +58,4 @@ scrape_configs:
       - drop:
           source: app
           value: "promtail"
+{% endraw %}
