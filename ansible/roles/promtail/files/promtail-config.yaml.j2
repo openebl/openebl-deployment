@@ -20,15 +20,14 @@ scrape_configs:
     pipeline_stages:
       - regex:
           expression: '(?i)(?P<level>debug|info|warn|error)'
-          source: msg
+      - template:
+          source: level
+          template: '{{ if .Value }}{{ .Value }}{{ else }}info{{ end }}'
+      - template:
+          source: level
+          template: '{{ .Value | ToLower }}'
       - labels:
           level:
-      - replace:
-          source_labels: [level]
-          target_label: level
-          replacement: info
-          expression: '.*'
-          regex: ^$
 
   - job_name: docker
     docker_sd_configs:
@@ -42,20 +41,19 @@ scrape_configs:
         regex: /(.+)
         replacement: $1
         action: replace
-      - source_labels: [app]
-        regex: promtail
-        action: drop
 
     pipeline_stages:
       - docker: {}
       - regex:
           expression: '(?i)(?P<level>debug|info|warn|error)'
-          source: msg
+      - template:
+          source: level
+          template: '{{ if .Value }}{{ .Value }}{{ else }}info{{ end }}'
+      - template:
+          source: level
+          template: '{{ .Value | ToLower }}'
       - labels:
           level:
-      - replace:
-          source_labels: [level]
-          target_label: level
-          replacement: info
-          expression: '.*'
-          regex: ^$
+      - drop:
+          source: app
+          value: "promtail"
