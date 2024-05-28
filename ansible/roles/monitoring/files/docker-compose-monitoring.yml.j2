@@ -60,8 +60,7 @@ services:
       mode: global
       resources:
         limits:
-          cpus: '0.5'
-          memory: '500M'
+          memory: '800M'
         reservations:
           memory: '20M'
     # links:
@@ -107,7 +106,6 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
           memory: '500M'
         reservations:
           memory: '20M'
