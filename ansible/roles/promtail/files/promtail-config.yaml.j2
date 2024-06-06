@@ -58,4 +58,7 @@ scrape_configs:
       - drop:
           source: app
           value: "promtail"
+      - drop:
+          source: app
+          value: "filebeat"
 {% endraw %}
