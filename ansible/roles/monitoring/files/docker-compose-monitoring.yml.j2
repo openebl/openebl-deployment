@@ -5,6 +5,7 @@ services:
     container_name: 'grafana'
     hostname: 'grafana'
     image: 'grafana/grafana:10.4.1'
+    pull_policy: always
     restart: always
     volumes:
       - /opt/monitoring/grafana/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/grafana-datasources.yaml
@@ -24,6 +25,7 @@ services:
     container_name: 'loki'
     hostname: 'loki'
     image: grafana/loki:2.9.6
+    pull_policy: always
     user: '0'
     volumes:
       - /opt/monitoring/loki/local-config.yaml:/etc/loki/local-config.yaml
@@ -39,6 +41,7 @@ services:
     container_name: 'prometheus'
     hostname: 'prometheus'
     image: 'prom/prometheus:v2.51.1'
+    pull_policy: always
     user: '0'
     volumes:
       - /opt/monitoring/prometheus/etc/prometheus.yaml:/etc/prometheus/prometheus.yaml
@@ -73,6 +76,7 @@ services:
     container_name: 'tempo'
     hostname: 'tempo'
     image: grafana/tempo:2.4.1
+    pull_policy: always
     volumes:
       - /opt/monitoring/tempo/tempo-config.yaml:/etc/tempo/tempo-config.yaml
     command: -config.file=/etc/tempo/tempo-config.yaml
@@ -86,6 +90,7 @@ services:
     container_name: 'otel-collector'
     hostname: 'otel-collector'
     image: otel/opentelemetry-collector-contrib:0.100.0
+    pull_policy: always
     volumes:
       - /opt/monitoring/otel-collector/otelcol-config.yaml:/etc/otelcol/otelcol-config.yaml
     environment:

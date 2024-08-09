@@ -4,6 +4,7 @@ services:
   psql-db-server:
       container_name: psql-db-server
       image: postgres:14.10-alpine
+      pull_policy: always
       restart: always
       environment:
           POSTGRES_USER: "{{ DATABASE_USER }}"

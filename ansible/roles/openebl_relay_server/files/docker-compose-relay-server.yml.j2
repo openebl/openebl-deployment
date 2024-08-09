@@ -5,6 +5,7 @@ services:
     container_name: '{{ inventory_hostname | default('relay_server') }}'
     hostname: '{{ inventory_hostname | default('relay_server') }}'
     image: "{{ RELAY_SERVER_IMAGE | default('openebl/relay_server:latest')}}"
+    pull_policy: always
     command: sh -c "relay_server migrate && relay_server server"
     restart: always
     environment:

@@ -5,6 +5,7 @@ services:
     container_name: 'promtail'
     hostname: 'promtail'
     image: "grafana/promtail:3.0.0"
+    pull_policy: always
     restart: always
     volumes:
       - /var/log:/var/log
