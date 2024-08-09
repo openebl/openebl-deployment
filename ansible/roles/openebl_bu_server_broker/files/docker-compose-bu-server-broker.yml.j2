@@ -5,6 +5,7 @@ services:
     container_name: '{{ inventory_hostname | default('bu_server_broker') }}'
     hostname: '{{ inventory_hostname | default('bu_server_broker') }}'
     image: "{{ BU_SERVER_IMAGE | default('openebl/bu_server:latest') }}"
+    pull_policy: always
     command: sh -c "bu_server migrate && bu_server broker"
     restart: always
     environment:
