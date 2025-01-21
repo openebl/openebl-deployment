@@ -15,7 +15,7 @@
     - { src: "./files/promtail-config.yaml.j2", dest: "/opt/monitoring/promtail/promtail-config.yaml" }
 
 - name: Deploy promtail
-  community.docker.docker_compose:
+  community.docker.docker_compose_v2:
     project_src: "/opt/monitoring/"
     files:
       - docker-compose-promtail.yml

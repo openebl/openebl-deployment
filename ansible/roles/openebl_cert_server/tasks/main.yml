@@ -11,7 +11,7 @@
     dest: /opt/openebl/docker-compose-cert-server.yml
 
 - name: Deploy openebl Cert server
-  community.docker.docker_compose:
+  community.docker.docker_compose_v2:
     project_src: "/opt/openebl/"
     files:
       - docker-compose-cert-server.yml
