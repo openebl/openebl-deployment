@@ -55,7 +55,7 @@
       - docker-compose-monitoring.yml
     state: present
     pull: always
-    recreate: smart
+    recreate: always
   register: output
 
 - name: Show results
