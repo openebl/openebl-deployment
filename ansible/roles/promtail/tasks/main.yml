@@ -20,7 +20,7 @@
     files:
       - docker-compose-promtail.yml
     state: present
-    pull: true
+    pull: always
     recreate: smart
   register: output
 

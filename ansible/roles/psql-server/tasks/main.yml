@@ -18,4 +18,4 @@
     files:
       - docker-compose.yml
     state: present
-    pull: true
+    pull: always
