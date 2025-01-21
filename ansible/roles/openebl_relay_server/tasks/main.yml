@@ -13,7 +13,7 @@
     owner: "{{ ansible_user }}"
 
 - name: Deploy openebl relay server
-  community.docker.docker_compose:
+  community.docker.docker_compose_v2:
     project_src: "/opt/openebl/"
     files:
       - docker-compose-relay-server.yml

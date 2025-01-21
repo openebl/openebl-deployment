@@ -11,7 +11,7 @@
     dest: /opt/openebl/docker-compose-bu-server.yml
 
 - name: Deploy openebl BU server
-  community.docker.docker_compose:
+  community.docker.docker_compose_v2:
     project_src: "/opt/openebl/"
     files:
       - docker-compose-bu-server.yml

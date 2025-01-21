@@ -13,7 +13,7 @@
     owner: "{{ ansible_user }}"
 
 - name: Deploy psql-server project
-  community.docker.docker_compose:
+  community.docker.docker_compose_v2:
     project_src: "/opt/psql-server/"
     files:
       - docker-compose.yml
