@@ -49,13 +49,13 @@
       dest: "/opt/monitoring/loki/local-config.yaml"
 
 - name: Deploy monitoring stack
-  community.docker.docker_compose:
+  community.docker.docker_compose_v2:
     project_src: "/opt/monitoring/"
     files:
       - docker-compose-monitoring.yml
     state: present
-    pull: true
-    recreate: smart
+    pull: always
+    recreate: always
   register: output
 
 - name: Show results

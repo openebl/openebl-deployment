@@ -5,6 +5,7 @@
     owner: "{{ ansible_user }}"
     group: root
     mode: 0744
+  run_once: true
 
 - name: Configure Docker Daemon Logger
   template:
@@ -13,78 +14,135 @@
     owner: "{{ ansible_user }}"
     group: root
     mode: 0755
-
-- name: Run apt update
-  command: apt update
-  when:
-    - ansible_pkg_mgr == 'apt'
+  run_once: true
 
 - name: Print ansible_pkg_mgr
   debug:
     var: ansible_pkg_mgr
 
+- name: script to add apt repo (Debian based systems)
+  template:
+    src: ./files/add_apt_repo.sh
+    dest: /tmp/add_apt_repo.sh
+    owner: "{{ ansible_user }}"
+    group: root
+    mode: 0755
+  run_once: true
+  when:
+    - ansible_pkg_mgr == 'apt'
+
+- name: Add apt repo and Run apt update (Debian based systems)
+  command: /tmp/add_apt_repo.sh
+  run_once: true
+  when:
+    - ansible_pkg_mgr == 'apt'
+
+- name: Uninstall unofficial packages (Debian based systems)
+  ansible.builtin.package:
+    name:
+      - docker.io
+      - docker-compose
+      - docker-compose-v2
+      - docker-doc
+      - podman-docker
+    state: absent
+  run_once: true
+  when: ansible_pkg_mgr == 'apt'
+
 - name: Install docker package (Debian based systems)
   ansible.builtin.package:
-    name: docker.io
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
     state: present
+  run_once: true
   when: ansible_pkg_mgr == 'apt'
+
+- name: Uninstall unofficial packages (redhat based systems)
+  ansible.builtin.package:
+    name:
+      - docker
+      - docker-client
+      - docker-client-latest
+      - docker-common
+      - docker-latest
+      - docker-latest-logrotate
+      - docker-logrotate
+      - docker-engine
+      - podman
+    state: absent
+  run_once: true
+  when: ansible_pkg_mgr == 'yum' or ansible_pkg_mgr == 'dnf'
+
+- name: Add apt repo (redhat based systems)
+  command: dnf -y install dnf-plugins-core && dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+  run_once: true
+  when: ansible_pkg_mgr == 'yum' or ansible_pkg_mgr == 'dnf'
 
 - name: Install docker package (redhat based systems)
   ansible.builtin.package:
     name: docker
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
     state: present
+  run_once: true
   when: ansible_pkg_mgr == 'yum' or ansible_pkg_mgr == 'dnf'
-
-# - name: Install Docker Compose
-#   ansible.builtin.package:
-#     state: present
-#     name:
-#       - docker-compose-v2
 
 - name: Reload Docker Daemon
   systemd:
-    state: reloaded
+    state: started
     name: docker
+  run_once: true
 
 - name: Enable docker service
   ansible.builtin.service:
     name: docker
     enabled: yes
+  run_once: true
 
 - name: Install pip
   ansible.builtin.package:
     name: python3-pip
     state: present
+  run_once: true
 
 - name: Use docker without sudo
   user:
     name: "{{ ansible_user }}"
     groups: docker
     append: yes
+  run_once: true
 
-- name: Install pip modules on target box
-  pip:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - docker==6.1.3
-    - docker-compose
-  when: ansible_pkg_mgr == 'apt'
-  environment:
-    PIP_BREAK_SYSTEM_PACKAGES: '1'
+# - name: Install pip modules on target box
+#   pip:
+#     name: "{{ item }}"
+#     state: present
+#   with_items:
+#     - docker==6.1.3
+#     - docker-compose
+#   when: ansible_pkg_mgr == 'apt'
+#   environment:
+#     PIP_BREAK_SYSTEM_PACKAGES: '1'
 
-- name: Install pip modules on target box
-  pip:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - docker
-  when: ansible_pkg_mgr == 'yum' or ansible_pkg_mgr == 'dnf'
-  environment:
-    PIP_BREAK_SYSTEM_PACKAGES: '1'
+# - name: Install pip modules on target box
+#   pip:
+#     name: "{{ item }}"
+#     state: present
+#   with_items:
+#     - docker
+#   when: ansible_pkg_mgr == 'yum' or ansible_pkg_mgr == 'dnf'
+#   environment:
+#     PIP_BREAK_SYSTEM_PACKAGES: '1'
 
 - name: Install ctop
   get_url:
     url: https://github.com/bcicen/ctop/releases/download/v0.7.7/ctop-0.7.7-linux-amd64
     dest: /usr/local/bin/ctop
     mode: 0755
+  run_once: true
